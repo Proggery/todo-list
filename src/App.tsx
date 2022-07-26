@@ -1,26 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { FC, useState, ChangeEvent } from "react";
+import "./App.css";
+import { ITask } from "./Interfaces";
+import TodoTask from "./TodoTask";
 
-function App() {
+const App: FC = () => {
+  const [task, setTask] = useState("");
+  const [deadline, setDeadline] = useState(0);
+  const [todoList, setTodoList] = useState<ITask[]>([]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+
+    if (name === "task") {
+      setTask(value);
+    } else {
+      setDeadline(Number(value));
+    }
+  };
+
+  const addTask = (): void => {
+    const newTask = { taskName: task, deadline: deadline };
+    setTodoList([...todoList, newTask]);
+    setTask("");
+    setDeadline(0);
+    console.log(todoList);
+  };
+
+  const deleteTask = (taskNameToDelete: string): void => {
+    setTodoList(todoList.filter((task) => task.taskName !== taskNameToDelete));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="header">
+        <div className="inputContainer">
+          <input
+            value={task}
+            name="task"
+            onChange={handleChange}
+            type="text"
+            placeholder="szó:"
+          />
+          <input
+            value={deadline}
+            name="deadline"
+            onChange={handleChange}
+            type="number"
+            placeholder="szám:"
+          />
+        </div>
+        <button onClick={addTask} className="addBtn">
+          Hozzáad
+        </button>
+      </div>
+      <div className="todoList">
+        {todoList.map((task: ITask, key: number) => (
+          <TodoTask key={key} task={task} deleteTask={deleteTask} />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
