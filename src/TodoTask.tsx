@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { ITask } from "./Interfaces";
 
 interface Props {
